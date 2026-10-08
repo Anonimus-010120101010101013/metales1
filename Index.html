@@ -1,0 +1,1986 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#081118">
+
+<title>Tabla Periódica • Juego</title>
+
+<style>
+
+*{
+  box-sizing:border-box;
+}
+
+:root{
+  --bg:#081118;
+  --panel:#101c25;
+  --panel2:#172731;
+  --line:#2d4552;
+  --text:#f4f8fa;
+  --muted:#a9bbc4;
+  --accent:#5ec1e8;
+  --green:#32d28b;
+  --red:#ff6474;
+  --gold:#ffd166;
+}
+
+html,
+body{
+  margin:0;
+  min-height:100%;
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;
+  background:
+  radial-gradient(circle at 50% -20%,#244353 0,#101b24 35%,#081118 75%);
+  color:var(--text);
+}
+
+body{
+  padding:12px;
+}
+
+button,
+input{
+  font:inherit;
+}
+
+button{
+  touch-action:manipulation;
+}
+
+
+/* =====================================================
+   INTRO AS
+===================================================== */
+
+#intro{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  background:
+    radial-gradient(circle at center,#1c3541 0,#0c1921 45%,#050b10 100%);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  transition:
+    opacity .8s ease,
+    visibility .8s ease;
+}
+
+#intro.hide{
+  opacity:0;
+  visibility:hidden;
+}
+
+.introAS{
+  position:relative;
+  font-size:clamp(90px,25vw,220px);
+  font-weight:1000;
+  letter-spacing:-18px;
+  color:#fff;
+  text-shadow:
+    0 0 10px #5ec1e8,
+    0 0 35px #5ec1e8,
+    0 0 80px #5ec1e855;
+  animation:
+    introZoom 1.8s ease forwards,
+    introGlow 1.4s ease-in-out infinite alternate;
+}
+
+.introAS::after{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:-25px;
+  height:3px;
+  background:#5ec1e8;
+  box-shadow:0 0 20px #5ec1e8;
+  transform:scaleX(0);
+  animation:introLine 1.2s ease .5s forwards;
+}
+
+@keyframes introZoom{
+
+  0%{
+    opacity:0;
+    transform:scale(.55);
+    filter:blur(15px);
+  }
+
+  35%{
+    opacity:1;
+    transform:scale(1.05);
+    filter:blur(0);
+  }
+
+  65%{
+    transform:scale(1);
+  }
+
+  100%{
+    opacity:1;
+    transform:scale(1);
+  }
+
+}
+
+@keyframes introGlow{
+
+  from{
+    text-shadow:
+      0 0 10px #5ec1e8,
+      0 0 30px #5ec1e8,
+      0 0 60px #5ec1e855;
+  }
+
+  to{
+    text-shadow:
+      0 0 15px #8bdfff,
+      0 0 45px #5ec1e8,
+      0 0 100px #5ec1e877;
+  }
+
+}
+
+@keyframes introLine{
+
+  to{
+    transform:scaleX(1);
+  }
+
+}
+
+
+/* =====================================================
+   APP
+===================================================== */
+
+#app{
+  width:min(980px,100%);
+  margin:auto;
+  background:rgba(12,24,32,.96);
+  border:1px solid var(--line);
+  border-radius:24px;
+  overflow:hidden;
+  box-shadow:0 18px 55px #0008;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.header{
+  padding:22px clamp(18px,4vw,34px);
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg,#172832,#101c25);
+}
+
+.logo{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.logoIcon{
+  width:48px;
+  height:48px;
+  border:2px solid var(--accent);
+  border-radius:13px;
+  display:grid;
+  place-items:center;
+  font-weight:900;
+  font-size:22px;
+  color:var(--accent);
+}
+
+h1{
+  font-size:clamp(23px,5vw,38px);
+  margin:0;
+  line-height:1.1;
+}
+
+.header p{
+  margin:7px 0 0;
+  color:var(--muted);
+  font-size:14px;
+}
+
+
+/* =====================================================
+   SCREEN
+===================================================== */
+
+.screen{
+  padding:clamp(18px,4vw,34px);
+}
+
+
+/* =====================================================
+   MENU PRINCIPAL
+===================================================== */
+
+.hero{
+  text-align:center;
+  padding:10px 0 5px;
+}
+
+.hero h2{
+  font-size:clamp(27px,6vw,44px);
+  margin:10px 0;
+}
+
+.hero p{
+  color:var(--muted);
+  max-width:680px;
+  margin:auto;
+  line-height:1.6;
+}
+
+
+/* BOTONES DEL MENU */
+
+.modes{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:16px;
+  margin-top:28px;
+}
+
+.mode{
+  border:1px solid var(--line);
+  background:linear-gradient(145deg,#172a35,#12212a);
+  border-radius:20px;
+  padding:22px;
+  text-align:center;
+  cursor:pointer;
+  min-height:180px;
+  transition:
+    transform .18s,
+    border-color .18s,
+    background .18s;
+  color:white;
+}
+
+.mode:hover{
+  transform:translateY(-3px);
+  border-color:#5c9bb5;
+}
+
+.mode:active{
+  transform:scale(.985);
+}
+
+.mode .icon{
+  font-size:40px;
+  margin-bottom:12px;
+}
+
+.mode h3{
+  margin:0;
+  font-size:21px;
+}
+
+.mode p{
+  margin:10px 0 0;
+  color:var(--muted);
+  line-height:1.5;
+  font-size:14px;
+}
+
+
+/* =====================================================
+   BARRA DEL JUEGO
+===================================================== */
+
+.topbar{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  gap:12px;
+  align-items:center;
+}
+
+.pill{
+  border:1px solid var(--line);
+  background:#172832;
+  padding:9px 12px;
+  border-radius:12px;
+  font-size:13px;
+  white-space:nowrap;
+}
+
+.progressWrap{
+  height:10px;
+  background:#0a141b;
+  border-radius:99px;
+  overflow:hidden;
+  border:1px solid #20333e;
+}
+
+#bar{
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg,#4aa8ce,#70d6ef);
+  transition:width .3s;
+}
+
+.stats{
+  display:flex;
+  gap:8px;
+  justify-content:center;
+  margin:15px 0 3px;
+}
+
+.stat{
+  font-size:13px;
+  color:var(--muted);
+  background:#111f28;
+  border:1px solid var(--line);
+  padding:7px 11px;
+  border-radius:10px;
+}
+
+.stat b{
+  color:#fff;
+}
+
+
+/* =====================================================
+   PREGUNTA
+===================================================== */
+
+.question{
+  text-align:center;
+  padding-top:17px;
+}
+
+.questionLabel{
+  color:var(--muted);
+  font-size:14px;
+}
+
+.symbolCard{
+  width:min(230px,62vw);
+  aspect-ratio:1;
+  margin:15px auto 20px;
+  border-radius:25px;
+  background:linear-gradient(145deg,#203944,#152730);
+  border:2px solid #64b8d6;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 12px 32px #0006;
+  position:relative;
+  overflow:hidden;
+}
+
+.symbolCard:after{
+  content:"";
+  position:absolute;
+  inset:-60%;
+  background:linear-gradient(
+    110deg,
+    transparent 42%,
+    #fff1 50%,
+    transparent 58%
+  );
+  animation:shine 4s infinite;
+}
+
+@keyframes shine{
+
+  0%,55%{
+    transform:translateX(-50%) rotate(20deg);
+  }
+
+  100%{
+    transform:translateX(50%) rotate(20deg);
+  }
+
+}
+
+.atomic{
+  font-size:14px;
+  color:#9fb5c0;
+  z-index:1;
+}
+
+.symbol{
+  font-size:clamp(65px,16vw,94px);
+  font-weight:950;
+  line-height:1.05;
+  z-index:1;
+}
+
+.ask{
+  font-size:12px;
+  color:#9fb5c0;
+  z-index:1;
+}
+
+
+/* =====================================================
+   OPCIONES
+===================================================== */
+
+.options{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+  max-width:720px;
+  margin:auto;
+}
+
+.option{
+  min-height:62px;
+  border:2px solid #304854;
+  border-radius:15px;
+  background:#1a2b34;
+  color:#fff;
+  cursor:pointer;
+  font-weight:700;
+  font-size:clamp(15px,3vw,18px);
+  padding:10px;
+}
+
+.option:hover{
+  border-color:#65b4d2;
+  background:#213944;
+}
+
+.option.correct{
+  background:#124d38;
+  border-color:var(--green);
+  color:#dffff0;
+}
+
+.option.wrong{
+  background:#592831;
+  border-color:var(--red);
+  color:#ffe8eb;
+}
+
+.option:disabled{
+  cursor:default;
+}
+
+
+/* =====================================================
+   ESCRIBIR
+===================================================== */
+
+.writeArea{
+  max-width:650px;
+  margin:auto;
+}
+
+.inputRow{
+  display:flex;
+  gap:10px;
+}
+
+input{
+  min-width:0;
+  flex:1;
+  background:#0b151c;
+  color:#fff;
+  border:2px solid #304854;
+  border-radius:14px;
+  padding:15px 16px;
+  outline:none;
+  font-size:17px;
+}
+
+input:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px #5ec1e822;
+}
+
+
+/* =====================================================
+   BOTONES
+===================================================== */
+
+.primary,
+.secondary{
+  border:0;
+  border-radius:13px;
+  padding:13px 18px;
+  min-height:46px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.primary{
+  background:var(--accent);
+  color:#08202a;
+}
+
+.secondary{
+  background:#263b46;
+  color:#dce8ed;
+}
+
+.primary:hover,
+.secondary:hover{
+  filter:brightness(1.1);
+}
+
+.feedback{
+  min-height:38px;
+  padding:13px 0 4px;
+  font-weight:800;
+}
+
+.good{
+  color:var(--green);
+}
+
+.bad{
+  color:var(--red);
+}
+
+.actions{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:14px;
+}
+
+.hidden{
+  display:none!important;
+}
+
+
+/* =====================================================
+   RESULTADO
+===================================================== */
+
+.result{
+  text-align:center;
+}
+
+.resultIcon{
+  font-size:55px;
+}
+
+.result h2{
+  font-size:32px;
+  margin:8px;
+}
+
+.score{
+  font-size:clamp(52px,13vw,82px);
+  font-weight:950;
+  margin:8px;
+  color:var(--gold);
+}
+
+.resultText{
+  color:var(--muted);
+  font-size:16px;
+}
+
+.mistakes{
+  margin:25px auto 10px;
+  max-width:760px;
+  text-align:left;
+}
+
+.mistakes h3{
+  text-align:center;
+}
+
+.mistake{
+  background:#17262e;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:13px 15px;
+  margin:9px 0;
+}
+
+.mistake strong{
+  font-size:18px;
+}
+
+.mistake small{
+  display:block;
+  color:var(--muted);
+  margin-top:5px;
+}
+
+.reviewBadge{
+  display:inline-block;
+  margin-top:8px;
+  padding:5px 8px;
+  border-radius:8px;
+  background:#3b2027;
+  color:#ffadb5;
+  font-size:12px;
+}
+
+.perfect{
+  padding:20px;
+  border:1px solid #246b50;
+  background:#113d30;
+  border-radius:15px;
+  color:#caffea;
+  text-align:center;
+}
+
+
+/* =====================================================
+   MOVIL
+===================================================== */
+
+@media(max-width:650px){
+
+  body{
+    padding:0;
+  }
+
+  #app{
+    border-radius:0;
+    min-height:100vh;
+    border-left:0;
+    border-right:0;
+  }
+
+  .header{
+    padding:18px 16px;
+  }
+
+  .logoIcon{
+    width:42px;
+    height:42px;
+    font-size:19px;
+  }
+
+  .screen{
+    padding:18px 15px 25px;
+  }
+
+  .modes{
+    grid-template-columns:1fr;
+    gap:12px;
+  }
+
+  .mode{
+    min-height:auto;
+    padding:20px;
+  }
+
+  .topbar{
+    grid-template-columns:1fr auto;
+  }
+
+  .topbar .progressWrap{
+    grid-column:1/-1;
+    grid-row:2;
+  }
+
+  .stats{
+    flex-wrap:wrap;
+  }
+
+  .options{
+    grid-template-columns:1fr;
+  }
+
+  .option{
+    min-height:56px;
+  }
+
+  .symbolCard{
+    margin-top:12px;
+    margin-bottom:16px;
+  }
+
+  .inputRow{
+    flex-direction:column;
+  }
+
+  .inputRow button{
+    width:100%;
+  }
+
+  .actions button{
+    flex:1;
+    min-width:130px;
+  }
+
+}
+
+
+@media(max-width:360px){
+
+  h1{
+    font-size:22px;
+  }
+
+  .hero h2{
+    font-size:27px;
+  }
+
+  .symbolCard{
+    width:180px;
+  }
+
+  .symbol{
+    font-size:70px;
+  }
+
+  .pill{
+    font-size:12px;
+    padding:8px 9px;
+  }
+
+}
+
+
+@media(prefers-reduced-motion:reduce){
+
+  *,
+  *:before,
+  *:after{
+    animation:none!important;
+    transition:none!important;
+  }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     INTRO AS
+===================================================== -->
+
+<div id="intro">
+  <div class="introAS">AS</div>
+</div>
+
+
+<!-- =====================================================
+     APLICACIÓN
+===================================================== -->
+
+<div id="app">
+
+
+<header class="header">
+
+  <div class="logo">
+
+    <div class="logoIcon">
+      ⚛
+    </div>
+
+    <div>
+
+      <h1>Tabla Periódica</h1>
+
+      <p>
+        Desafío de elementos químicos
+      </p>
+
+    </div>
+
+  </div>
+
+</header>
+
+
+<!-- =====================================================
+     MENU
+===================================================== -->
+
+<section id="home" class="screen hidden">
+
+
+  <div class="hero">
+
+    <h2>
+      Tabla Periódica
+    </h2>
+
+    <p>
+      Pon a prueba tus conocimientos.
+    </p>
+
+  </div>
+
+
+  <div class="modes">
+
+
+    <!-- NIVEL 1 -->
+
+    <button
+      type="button"
+      class="mode"
+      data-level="1"
+    >
+
+      <div class="icon">
+        🎯
+      </div>
+
+      <h3>
+        Nivel 1
+      </h3>
+
+      <p>
+        Escoge la respuesta correcta.
+      </p>
+
+    </button>
+
+
+    <!-- NIVEL 2 -->
+
+    <button
+      type="button"
+      class="mode"
+      data-level="2"
+    >
+
+      <div class="icon">
+        ✍️
+      </div>
+
+      <h3>
+        Nivel 2
+      </h3>
+
+      <p>
+        Escribe el nombre del elemento.
+      </p>
+
+    </button>
+
+
+  </div>
+
+
+</section>
+
+
+
+<!-- =====================================================
+     JUEGO
+===================================================== -->
+
+<section id="game" class="screen hidden">
+
+
+  <div class="topbar">
+
+    <div
+      class="pill"
+      id="levelLabel"
+    >
+      NIVEL 1
+    </div>
+
+
+    <div class="progressWrap">
+
+      <div id="bar"></div>
+
+    </div>
+
+
+    <div class="pill">
+
+      ⏱
+      <span id="timer">
+        00:00
+      </span>
+
+    </div>
+
+  </div>
+
+
+  <div class="stats">
+
+    <div class="stat">
+
+      Elemento
+
+      <b id="current">
+        1
+      </b>
+
+      /
+
+      <b id="total">
+        29
+      </b>
+
+    </div>
+
+
+    <div class="stat">
+
+      Puntos
+
+      <b id="score">
+        0
+      </b>
+
+    </div>
+
+
+    <div class="stat">
+
+      Racha 🔥
+
+      <b id="streak">
+        0
+      </b>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="question">
+
+
+    <div class="questionLabel">
+
+      IDENTIFICA ESTE ELEMENTO
+
+    </div>
+
+
+    <div class="symbolCard">
+
+
+      <div
+        class="atomic"
+        id="atomic"
+      >
+        20
+      </div>
+
+
+      <div
+        class="symbol"
+        id="symbol"
+      >
+        Ca
+      </div>
+
+
+      <div class="ask">
+
+        ¿Qué elemento es?
+
+      </div>
+
+
+    </div>
+
+
+
+    <!-- OPCIONES -->
+
+    <div
+      id="answers"
+      class="options"
+    ></div>
+
+
+
+    <!-- ESCRITURA -->
+
+    <div
+      id="writeArea"
+      class="writeArea hidden"
+    >
+
+      <form id="answerForm">
+
+        <div class="inputRow">
+
+          <input
+            id="answerInput"
+            maxlength="40"
+            autocomplete="off"
+            autocapitalize="words"
+            placeholder="Escribe el nombre..."
+            aria-label="Nombre del elemento"
+          >
+
+          <button
+            class="primary"
+            type="submit"
+          >
+            Comprobar ✓
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+
+
+    <div
+      id="feedback"
+      class="feedback"
+      aria-live="polite"
+    ></div>
+
+
+
+    <div class="actions">
+
+      <button
+        type="button"
+        id="nextBtn"
+        class="primary hidden"
+      >
+        Siguiente →
+      </button>
+
+
+      <button
+        type="button"
+        id="exitBtn"
+        class="secondary"
+      >
+        Salir
+      </button>
+
+    </div>
+
+
+  </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     RESULTADO
+===================================================== -->
+
+<section
+  id="result"
+  class="screen hidden"
+>
+
+
+  <div class="result">
+
+    <div
+      class="resultIcon"
+      id="resultIcon"
+    >
+      🏆
+    </div>
+
+
+    <h2>
+      ¡Partida terminada!
+    </h2>
+
+
+    <div
+      class="score"
+      id="finalScore"
+    >
+      0 puntos
+    </div>
+
+
+    <p
+      class="resultText"
+      id="percentage"
+    ></p>
+
+  </div>
+
+
+
+  <div class="mistakes">
+
+    <h3>
+      📋 Revisa tus errores
+    </h3>
+
+
+    <div
+      id="mistakeList"
+    ></div>
+
+  </div>
+
+
+
+  <div class="actions">
+
+    <button
+      type="button"
+      id="againBtn"
+      class="primary"
+    >
+      🔄 Jugar otra vez
+    </button>
+
+
+    <button
+      type="button"
+      id="homeBtn"
+      class="secondary"
+    >
+      ⌂ Inicio
+    </button>
+
+  </div>
+
+
+</section>
+
+
+</div>
+
+
+
+<script>
+
+(() => {
+
+"use strict";
+
+
+/* =====================================================
+   INTRO
+===================================================== */
+
+window.addEventListener("load", () => {
+
+  setTimeout(() => {
+
+    const intro = document.getElementById("intro");
+    const home = document.getElementById("home");
+
+    intro.classList.add("hide");
+
+    setTimeout(() => {
+
+      intro.style.display = "none";
+
+      home.classList.remove("hidden");
+
+    }, 800);
+
+  }, 2300);
+
+});
+
+
+
+/* =====================================================
+   ELEMENTOS
+===================================================== */
+
+const elements = [
+
+{s:"Li",n:"Litio",a:3,c:"Metales alcalinos"},
+{s:"Na",n:"Sodio",a:11,c:"Metales alcalinos"},
+{s:"K",n:"Potasio",a:19,c:"Metales alcalinos"},
+{s:"Rb",n:"Rubidio",a:37,c:"Metales alcalinos"},
+{s:"Cs",n:"Cesio",a:55,c:"Metales alcalinos"},
+{s:"Fr",n:"Francio",a:87,c:"Metales alcalinos"},
+
+{s:"Be",n:"Berilio",a:4,c:"Metales alcalinotérreos"},
+{s:"Mg",n:"Magnesio",a:12,c:"Metales alcalinotérreos"},
+{s:"Ca",n:"Calcio",a:20,c:"Metales alcalinotérreos"},
+{s:"Sr",n:"Estroncio",a:38,c:"Metales alcalinotérreos"},
+{s:"Ba",n:"Bario",a:56,c:"Metales alcalinotérreos"},
+{s:"Ra",n:"Radio",a:88,c:"Metales alcalinotérreos"},
+
+{s:"B",n:"Boro",a:5,c:"Metaloides"},
+{s:"Si",n:"Silicio",a:14,c:"Metaloides"},
+{s:"Ge",n:"Germanio",a:32,c:"Metaloides"},
+{s:"As",n:"Arsénico",a:33,c:"Metaloides"},
+{s:"Sb",n:"Antimonio",a:51,c:"Metaloides"},
+{s:"Te",n:"Telurio",a:52,c:"Metaloides"},
+
+{s:"H",n:"Hidrógeno",a:1,c:"No metales reactivos"},
+{s:"C",n:"Carbono",a:6,c:"No metales reactivos"},
+{s:"N",n:"Nitrógeno",a:7,c:"No metales reactivos"},
+{s:"O",n:"Oxígeno",a:8,c:"No metales reactivos"},
+{s:"F",n:"Flúor",a:9,c:"No metales reactivos"},
+{s:"P",n:"Fósforo",a:15,c:"No metales reactivos"},
+{s:"S",n:"Azufre",a:16,c:"No metales reactivos"},
+{s:"Cl",n:"Cloro",a:17,c:"No metales reactivos"},
+{s:"Se",n:"Selenio",a:34,c:"No metales reactivos"},
+{s:"Br",n:"Bromo",a:35,c:"No metales reactivos"},
+{s:"I",n:"Yodo",a:53,c:"No metales reactivos"}
+
+];
+
+
+
+/* =====================================================
+   VARIABLES
+===================================================== */
+
+const $ = id =>
+  document.getElementById(id);
+
+let level = 1;
+
+let questions = [];
+
+let index = 0;
+
+let score = 0;
+
+let streak = 0;
+
+let mistakes = [];
+
+let answered = false;
+
+let startTime = 0;
+
+let timerId = null;
+
+let lastLevel = 1;
+
+const TOTAL = 29;
+
+
+
+/* =====================================================
+   FUNCIONES
+===================================================== */
+
+function shuffle(arr){
+
+  return [...arr].sort(
+    () => Math.random() - 0.5
+  );
+
+}
+
+
+function norm(s){
+
+  return String(s)
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .trim();
+
+}
+
+
+function esc(s){
+
+  return String(s).replace(
+    /[&<>"']/g,
+    m => ({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#039;"
+    }[m])
+  );
+
+}
+
+
+
+/* =====================================================
+   INICIAR JUEGO
+===================================================== */
+
+function startGame(l){
+
+  level = l;
+
+  lastLevel = l;
+
+  index = 0;
+
+  score = 0;
+
+  streak = 0;
+
+  mistakes = [];
+
+  answered = false;
+
+  questions = shuffle(elements).slice(
+    0,
+    TOTAL
+  );
+
+
+  $("home").classList.add("hidden");
+
+  $("result").classList.add("hidden");
+
+  $("game").classList.remove("hidden");
+
+
+  $("levelLabel").textContent =
+    level === 1
+      ? "NIVEL 1"
+      : "NIVEL 2";
+
+
+  $("total").textContent =
+    questions.length;
+
+
+  startTimer();
+
+  showQuestion();
+
+}
+
+
+
+/* =====================================================
+   TEMPORIZADOR
+===================================================== */
+
+function startTimer(){
+
+  clearInterval(timerId);
+
+  startTime = Date.now();
+
+  updateTimer();
+
+  timerId = setInterval(
+    updateTimer,
+    1000
+  );
+
+}
+
+
+function updateTimer(){
+
+  const sec =
+    Math.floor(
+      (Date.now() - startTime) / 1000
+    );
+
+  const m =
+    String(
+      Math.floor(sec / 60)
+    ).padStart(2,"0");
+
+  const s =
+    String(
+      sec % 60
+    ).padStart(2,"0");
+
+
+  $("timer").textContent =
+    m + ":" + s;
+
+}
+
+
+
+/* =====================================================
+   MOSTRAR PREGUNTA
+===================================================== */
+
+function showQuestion(){
+
+  answered = false;
+
+  const e =
+    questions[index];
+
+
+  $("current").textContent =
+    index + 1;
+
+  $("score").textContent =
+    score;
+
+  $("streak").textContent =
+    streak;
+
+
+  $("bar").style.width =
+    (index / questions.length * 100) + "%";
+
+
+  $("atomic").textContent =
+    e.a;
+
+  $("symbol").textContent =
+    e.s;
+
+
+  $("feedback").textContent =
+    "";
+
+  $("nextBtn").classList.add(
+    "hidden"
+  );
+
+
+  $("answerInput").value =
+    "";
+
+  $("answers").innerHTML =
+    "";
+
+
+
+  /* NIVEL 1 */
+
+  if(level === 1){
+
+    $("answers")
+      .classList.remove("hidden");
+
+    $("writeArea")
+      .classList.add("hidden");
+
+
+    let opts = [e.n];
+
+
+    while(opts.length < 4){
+
+      const x =
+        elements[
+          Math.floor(
+            Math.random() *
+            elements.length
+          )
+        ].n;
+
+
+      if(!opts.includes(x)){
+
+        opts.push(x);
+
+      }
+
+    }
+
+
+    shuffle(opts).forEach(name => {
+
+      const b =
+        document.createElement(
+          "button"
+        );
+
+      b.type =
+        "button";
+
+      b.className =
+        "option";
+
+      b.textContent =
+        name;
+
+
+      b.addEventListener(
+        "click",
+        () =>
+          checkChoice(
+            b,
+            name,
+            e.n
+          )
+      );
+
+
+      $("answers")
+        .appendChild(b);
+
+    });
+
+  }
+
+
+  /* NIVEL 2 */
+
+  else{
+
+    $("answers")
+      .classList.add("hidden");
+
+    $("writeArea")
+      .classList.remove("hidden");
+
+
+    setTimeout(
+      () =>
+        $("answerInput").focus(),
+      80
+    );
+
+  }
+
+}
+
+
+
+/* =====================================================
+   COMPROBAR
+===================================================== */
+
+function finish(
+  ok,
+  chosen,
+  correct
+){
+
+  if(answered)
+    return;
+
+
+  answered = true;
+
+
+  if(ok){
+
+    streak++;
+
+    score +=
+      1 +
+      (
+        streak >= 3
+          ? 1
+          : 0
+      );
+
+
+    $("feedback").innerHTML =
+      '<span class="good">✓ ¡Correcto! ' +
+      (
+        streak >= 3
+          ? "🔥 Racha de " +
+            streak +
+            " · +2 puntos"
+          : ""
+      ) +
+      "</span>";
+
+  }
+
+
+  else{
+
+    streak = 0;
+
+
+    mistakes.push({
+
+      index,
+
+      e:questions[index],
+
+      chosen:
+        chosen ||
+        "Sin respuesta",
+
+      correct
+
+    });
+
+
+    $("feedback").innerHTML =
+      '<span class="bad">✗ Incorrecto · La respuesta era ' +
+      esc(correct) +
+      "</span>";
+
+  }
+
+
+  $("score").textContent =
+    score;
+
+  $("streak").textContent =
+    streak;
+
+
+  $("bar").style.width =
+    ((index + 1) /
+      questions.length *
+      100) +
+    "%";
+
+
+  $("nextBtn")
+    .classList.remove(
+      "hidden"
+    );
+
+
+  document
+    .querySelectorAll(".option")
+    .forEach(
+      b => b.disabled = true
+    );
+
+}
+
+
+
+/* =====================================================
+   OPCIONES
+===================================================== */
+
+function checkChoice(
+  btn,
+  name,
+  correct
+){
+
+  document
+    .querySelectorAll(".option")
+    .forEach(b => {
+
+      if(
+        b.textContent ===
+        correct
+      ){
+
+        b.classList.add(
+          "correct"
+        );
+
+      }
+
+    });
+
+
+  if(name !== correct){
+
+    btn.classList.add(
+      "wrong"
+    );
+
+  }
+
+
+  finish(
+    name === correct,
+    name,
+    correct
+  );
+
+}
+
+
+
+/* =====================================================
+   RESPUESTA ESCRITA
+===================================================== */
+
+function checkWritten(){
+
+  const value =
+    $("answerInput").value;
+
+
+  if(!value.trim()){
+
+    $("feedback").innerHTML =
+      '<span class="bad">Escribe una respuesta primero.</span>';
+
+    return;
+
+  }
+
+
+  finish(
+
+    norm(value) ===
+    norm(questions[index].n),
+
+    value,
+
+    questions[index].n
+
+  );
+
+}
+
+
+
+/* =====================================================
+   SIGUIENTE
+===================================================== */
+
+function nextQuestion(){
+
+  if(!answered)
+    return;
+
+
+  index++;
+
+
+  if(
+    index >=
+    questions.length
+  ){
+
+    showResult();
+
+  }
+
+  else{
+
+    showQuestion();
+
+  }
+
+}
+
+
+
+/* =====================================================
+   RESULTADO
+===================================================== */
+
+function showResult(){
+
+  clearInterval(
+    timerId
+  );
+
+
+  $("game")
+    .classList.add("hidden");
+
+
+  $("result")
+    .classList.remove("hidden");
+
+
+  const max =
+    questions.length +
+    Math.max(
+      0,
+      questions.length - 2
+    );
+
+
+  const pct =
+    Math.round(
+      score / max * 100
+    );
+
+
+  $("finalScore")
+    .textContent =
+    score + " puntos";
+
+
+  $("percentage")
+    .textContent =
+    "Completaste " +
+    questions.length +
+    " preguntas · " +
+    Math.min(100,pct) +
+    "% de rendimiento · Tiempo " +
+    $("timer").textContent;
+
+
+  $("resultIcon")
+    .textContent =
+      mistakes.length === 0
+        ? "🏆"
+        : pct >= 70
+          ? "🥳"
+          : pct >= 50
+            ? "👍"
+            : "📚";
+
+
+
+  if(!mistakes.length){
+
+    $("mistakeList").innerHTML =
+      '<div class="perfect">🎉 ¡Excelente! No tuviste ningún error.</div>';
+
+  }
+
+
+  else{
+
+    $("mistakeList").innerHTML =
+      mistakes.map(m =>
+
+        '<div class="mistake">' +
+
+          '<strong>' +
+          esc(m.e.s) +
+          ' — ' +
+          esc(m.e.n) +
+          '</strong>' +
+
+          '<small>Tu respuesta: ' +
+          '<span class="bad">' +
+          esc(m.chosen) +
+          '</span>' +
+          '</small>' +
+
+          '<small>Correcta: ' +
+          '<span class="good">' +
+          esc(m.correct) +
+          '</span>' +
+          '</small>' +
+
+          '<small>Familia: ' +
+          esc(m.e.c) +
+          '</small>' +
+
+          '<span class="reviewBadge">' +
+          '❌ Repasar' +
+          '</span>' +
+
+        '</div>'
+
+      ).join("");
+
+  }
+
+}
+
+
+
+/* =====================================================
+   EVENTOS
+===================================================== */
+
+document
+  .querySelectorAll("[data-level]")
+  .forEach(b => {
+
+    b.addEventListener(
+      "click",
+      () =>
+        startGame(
+          Number(
+            b.dataset.level
+          )
+        )
+    );
+
+  });
+
+
+
+$("nextBtn")
+  .addEventListener(
+    "click",
+    nextQuestion
+  );
+
+
+
+$("exitBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      clearInterval(
+        timerId
+      );
+
+      $("game")
+        .classList.add(
+          "hidden"
+        );
+
+      $("home")
+        .classList.remove(
+          "hidden"
+        );
+
+    }
+  );
+
+
+
+$("againBtn")
+  .addEventListener(
+    "click",
+    () =>
+      startGame(
+        lastLevel
+      )
+  );
+
+
+
+$("homeBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      $("result")
+        .classList.add(
+          "hidden"
+        );
+
+      $("home")
+        .classList.remove(
+          "hidden"
+        );
+
+    }
+  );
+
+
+
+$("answerForm")
+  .addEventListener(
+    "submit",
+    e => {
+
+      e.preventDefault();
+
+      if(level === 2){
+
+        checkWritten();
+
+      }
+
+    }
+  );
+
+
+})();
+
+</script>
+
+</body>
+</html>
